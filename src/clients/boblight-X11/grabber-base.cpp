@@ -1,17 +1,17 @@
 /*
  * boblight
- * Copyright (C) Bob  2009 
- * 
+ * Copyright (C) Bob  2009
+ *
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * boblight is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,7 @@ CGrabber::CGrabber(void* boblight, volatile bool& stop, bool sync) : m_stop(stop
   m_dpy = NULL;
   m_debug = false;
   m_sync = sync;
+  m_deepcolor = false;
 }
 
 CGrabber::~CGrabber()
@@ -132,7 +133,7 @@ bool CGrabber::Wait()
 void CGrabber::SetDebug(const char* display)
 {
   //set up a display connection, a window and a gc so we can show what we're capturing
-  
+
   m_debugdpy = XOpenDisplay(display);
   assert(m_debugdpy);
   m_debugwindowwidth = Max(200, m_size);
@@ -149,7 +150,7 @@ void CGrabber::SetDebug(const char* display)
   m_lastmeasurement = m_lastupdate;
   m_measurements = 0.0;
   m_nrmeasurements = 0.0;
-  
+
   m_debug = true;
 }
 

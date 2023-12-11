@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/sbin/xstop &
+make
+checkinstall --backup=no
+/usr/sbin/ldconfig
+#/sbin/xrestart

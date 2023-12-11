@@ -78,9 +78,15 @@ bool CGrabberXGetImage::Run()
         XDestroyImage(xim);
 
         //place pixel in rgb array
-        rgb[0] = (pixel >> 16) & 0xff;
-        rgb[1] = (pixel >>  8) & 0xff;
-        rgb[2] = (pixel >>  0) & 0xff;
+	if (m_deepcolor) {
+		rgb[0] = ( ( (pixel >> 20) & 0x3ff ) >> 2 ) & 0xff;
+		rgb[1] = ( ( (pixel >> 10) & 0x3ff ) >> 2 ) & 0xff;
+		rgb[2] = ( ( (pixel >>  0) & 0x3ff ) >> 2 ) & 0xff;
+	} else {
+		rgb[0] = (pixel >> 16) & 0xff;
+		rgb[1] = (pixel >>  8) & 0xff;
+		rgb[2] = (pixel >>  0) & 0xff;
+	}
 
         //add pixel to boblight
         boblight_addpixelxy(m_boblight, x, y, rgb);

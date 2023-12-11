@@ -1,17 +1,17 @@
 /*
  * boblight
- * Copyright (C) Bob  2009 
- * 
+ * Copyright (C) Bob  2009
+ *
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * boblight is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -85,7 +85,7 @@ bool CGrabberXRender::ExtendedSetup()
   m_xim->data = m_shmseginfo.shmaddr;
   m_shmseginfo.readOnly = False;
   XShmAttach(m_dpy, &m_shmseginfo);
-  
+
   return true;
 }
 
@@ -117,7 +117,7 @@ bool CGrabberXRender::CheckExtensions()
     m_error = "Shared memory extension not supported";
     return false;
   }
-  
+
   return true;
 }
 
@@ -126,6 +126,9 @@ bool CGrabberXRender::Run()
   XImage* xim;
   unsigned long pixel;
   int rgb[3];
+
+  //int depth = m_rootattr.depth;
+  //bool deepColor = true;
 
   boblight_setscanrange(m_boblight, m_size, m_size);
 
@@ -137,7 +140,7 @@ bool CGrabberXRender::Run()
     m_transform.matrix[0][0] = m_rootattr.width;
     m_transform.matrix[1][1] = m_rootattr.height;
     m_transform.matrix[2][2] = m_size;
-    
+
     XRenderSetPictureTransform (m_dpy, m_srcpicture, &m_transform);
 
     //render the thing
@@ -152,11 +155,17 @@ bool CGrabberXRender::Run()
     {
       for (int x = 0; x < m_size && !m_stop; x++)
       {
-        pixel = XGetPixel(m_xim, x, y);
-        
-        rgb[0] = (pixel >> 16) & 0xff;
-        rgb[1] = (pixel >>  8) & 0xff;
-        rgb[2] = (pixel >>  0) & 0xff;
+	pixel = XGetPixel(m_xim, x, y);
+
+	if (m_deepcolor) {
+		rgb[0] = ( ( (pixel >> 20) & 0x3ff ) >> 2 ) & 0xff;
+		rgb[1] = ( ( (pixel >> 10) & 0x3ff ) >> 2 ) & 0xff;
+		rgb[2] = ( ( (pixel >>  0) & 0x3ff ) >> 2 ) & 0xff;
+	} else {
+		rgb[0] = (pixel >> 16) & 0xff;
+		rgb[1] = (pixel >>  8) & 0xff;
+		rgb[2] = (pixel >>  0) & 0xff;
+	}
 
         boblight_addpixelxy(m_boblight, x, y, rgb);
       }
@@ -190,6 +199,6 @@ bool CGrabberXRender::Run()
   }
 
   m_error.clear();
-  
+
   return true;
 }

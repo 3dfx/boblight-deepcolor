@@ -1,17 +1,17 @@
 /*
  * boblight
- * Copyright (C) Bob  2009 
- * 
+ * Copyright (C) Bob  2009
+ *
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * boblight is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,6 +36,7 @@ CFlagManagerX11::CFlagManagerX11()
   m_debug = false;     //no debugging by default
   m_debugdpy = NULL;   //default debug dpy is system default
   m_sync = true;       //sync mode enabled by default
+  m_deepcolor = false;
 }
 
 void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
@@ -80,6 +81,10 @@ void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   {
     m_method = XGETIMAGE;
   }
+  else if (c == 'z')
+  {
+    m_deepcolor = true;
+  }
   else if (c == 'd') //turn on debug mode
   {
     m_debug = true;
@@ -111,5 +116,6 @@ void CFlagManagerX11::PrintHelpMessage()
   cout << "  -d  debug mode\n";
   cout << "  -f  fork\n";
   cout << "  -y  set the sync mode, default is on, valid options are \"on\" and \"off\"\n";
+  cout << "  -z  deep color mode (10-bit)\n";
   cout << "\n";
 }

@@ -1,17 +1,17 @@
 /*
  * boblight
- * Copyright (C) Bob  2009 
- * 
+ * Copyright (C) Bob  2009
+ *
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * boblight is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
     g_flagmanager.PrintHelpMessage();
     return 1;
   }
-  
+
   if (g_flagmanager.m_printhelp) //print help message
   {
     g_flagmanager.PrintHelpMessage();
@@ -94,8 +94,8 @@ int main (int argc, char *argv[])
       g_flagmanager.m_pixels = 16;
     else                                     //xrender is very fast so we scale down the root window
       g_flagmanager.m_pixels = 64;           //to a 64x64 pixels pixmap
-  }  
-  
+  }
+
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
@@ -113,7 +113,7 @@ int Run()
     void* boblight = boblight_init();
 
     cout << "Connecting to boblightd\n";
-    
+
     //try to connect, if we can't then bitch to stderr and destroy boblight
     if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
         !boblight_setpriority(boblight, g_flagmanager.m_priority))
@@ -126,7 +126,7 @@ int Run()
     }
 
     cout << "Connection to boblightd opened\n";
-    
+
     //if we can't parse the boblight option lines (given with -o) properly, just exit
     try
     {
@@ -140,7 +140,7 @@ int Run()
 
     //set up grabber, based on whether we want to use xrender or xgetimage
     CGrabber* grabber;
-    
+
     if (g_flagmanager.m_method == XGETIMAGE)
       grabber = new CGrabberXGetImage(boblight, stop, g_flagmanager.m_sync);
     else if (g_flagmanager.m_method == XRENDER)
@@ -148,10 +148,11 @@ int Run()
 
     grabber->SetInterval(g_flagmanager.m_interval);
     grabber->SetSize(g_flagmanager.m_pixels);
+    grabber->SetDeepColor(g_flagmanager.m_deepcolor);
 
     if (g_flagmanager.m_debug)
       grabber->SetDebug(g_flagmanager.m_debugdpy);
-    
+
     if (!grabber->Setup()) //just exit if we can't set up the grabber
     {
       PrintError(grabber->GetError());
@@ -179,7 +180,7 @@ int Run()
   }
 
   cout << "Exiting\n";
-  
+
   return 0;
 }
 
